@@ -11,9 +11,6 @@ void LSB_Encode(FILE *fp1, FILE *fp2, FILE *fp3);
 //
 int size_of_image(FILE *fp1);
 //
-////Entering Secret Message to file
-void secret_text(FILE *fp2);
-//
 ////Size Of The Secret Message
 int secret_text_size(FILE *fp2);
 //
@@ -22,9 +19,6 @@ int get_bit(char byte, int bit);
 //
 ////encryption of message
 void stega_encrypt(FILE *fp1, FILE *fp2, FILE *fp3);
-//
-////Encryption For Strings
-void string_encrypt(char *str,FILE *fp1, FILE *fp3);
 //
 ////Encryption For Numbers
 void size_encrypt(int num,FILE *fp1, FILE *fp3);
@@ -44,16 +38,22 @@ int size_of_image(FILE *fp1) {
     return ((width * height * 3) / 8);
 }
 
-//Entering Secret Message to file
-void secret_text(FILE *fp2) {
-    char ch;
-    while ((ch = getchar()) != EOF) {
-        putc(ch, fp2);    //puts secret text to file
-    }
-}
-
 //Size Of The Secret Message
+/**
+ * This function using to get size of secret message
+ * @param fp2 is compressMessage
+ * @return
+ */
 int secret_text_size(FILE *fp2) {
+//    int counter = 0;
+//    char tempChar;
+//    while ((tempChar = fgetc(fp2)) != EOF) {
+//        counter++;
+//    }
+//    printf("number of word in counter is %d", counter);
+//    return counter;
+
+
     int size_txt;
     fseek(fp2, 0L, SEEK_END);
     size_txt = ftell(fp2);
@@ -79,10 +79,12 @@ void stega_encrypt(FILE *fp1, FILE *fp2, FILE *fp3) {
     char file_buff = 0, msg_buff = 0, ch;    //temp var for one byte from file and msg
     int i;
     int bit_msg;
+    int counter = 0;
     while ((msg_buff = fgetc(fp2)) != EOF) {
+        printf("%c", msg_buff);
+        counter++;
         for (i = 1; i <= 8; i++) {
             file_buff = fgetc(fp1);
-            printf("%c", file_buff);
 
             int file_byte_lsb = (file_buff & 1);
 
@@ -100,7 +102,7 @@ void stega_encrypt(FILE *fp1, FILE *fp2, FILE *fp3) {
             }
         }
     }
-
+    printf("Number of word %d", counter);
     /*copying rest of data */
     while (!feof(fp1)) {
         char tmp_cpy = fgetc(fp1);
@@ -114,43 +116,6 @@ void stega_encrypt(FILE *fp1, FILE *fp2, FILE *fp3) {
         printf("\n*** Failed Encrypting ***\n");
 }
 
-//Encryption For Strings
-void string_encrypt(char *str, FILE *fp1, FILE *fp3) {
-
-    char file_buff, msg_buff;    //temp var for one byte from file and msg
-    int i, j = 0;
-    int bit_msg;
-    while ((msg_buff = str[j]) != '\0') {
-        for (i = 1; i <= 8; i++) {
-            file_buff = fgetc(fp1);
-
-            //get the least significant bit of file_buff
-            int file_byte_lsb = (file_buff & 1);
-
-            bit_msg = get_bit(msg_buff, i);
-
-            //if lsb == 1 and bit msg == 1 then just put this in position
-            if (file_byte_lsb == bit_msg) {
-                fputc(file_buff, fp3);
-            }
-                //else if it is difference
-            else {
-                //let assum that lsb = 0 => msg bit = 1 then | 1 always equal 1 so put 1 in lsb position
-                if (file_byte_lsb == 0)
-                    file_buff = (file_buff | 1);
-                    //else if lsb = 1 => bit_msg = 0 then just put 0 in this position. We have this least significant bit equal 1 then
-                    //when ^ operator with 1 so always equal 0
-                else
-                    file_buff = (file_buff ^ 1);
-
-                //then just put this in lsb position
-                fputc(file_buff, fp3);
-            }
-        }
-        j++;
-    }
-}
-
 //Encryption For Numbers
 void size_encrypt(int num, FILE *fp1, FILE *fp3) {
 
@@ -158,6 +123,7 @@ void size_encrypt(int num, FILE *fp1, FILE *fp3) {
     int i, j = 0;
     int bit_msg;
 
+    //todo: I think this line must be 16
     for (i = 1; i <= 8; i++) {
         //file_buff store
         file_buff = fgetc(fp1);
@@ -211,6 +177,7 @@ void LSB_Encode(FILE *fp1, FILE *fp2, FILE *fp3) {
      * This function using to calculate size of secret text
      */
     int size_txt = secret_text_size(fp2);
+    printf("%d", size_txt);
     printf("\nSize of The Secret Message is ==> %d\n", size_txt);
 
     //Comparing Image Size With Text
@@ -245,6 +212,9 @@ void LSB_Encode(FILE *fp1, FILE *fp2, FILE *fp3) {
         return;
     }
 
+    /**
+     * After copy 54 bit from fp1 to fp3 then we will embed size of secret text into fp3
+     */
     size_encrypt(size_txt, fp1, fp3);
 
     //final we will encrypt the secret message

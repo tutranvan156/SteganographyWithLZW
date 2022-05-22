@@ -18,8 +18,10 @@ int decode(int code, FILE * outputFile);
 
 // compression
 void compress(FILE *inputFile, FILE *outputFile) {
+    printf("Start compress message\n");
 
     int prefix = getc(inputFile);
+    printf("%c", prefix);
     if (prefix == EOF) {
         return;
     }
@@ -57,12 +59,14 @@ void compress(FILE *inputFile, FILE *outputFile) {
     
     // free the dictionary here
     dictionaryDestroy();
+    printf("\nFinish compress message\n");
 }
 
 // decompression
 // to reconstruct a string from an index we need to traverse the dictionary strings backwards, following each
 //   successive prefix index until this prefix index is the empty index
 void decompress(FILE * inputFile, FILE * outputFile) {
+    printf("Begin decompress process\n");
     // int prevcode, currcode
     int previousCode; int currentCode;
     int nextCode = 256; // start with the same dictionary of 256 characters
@@ -78,9 +82,7 @@ void decompress(FILE * inputFile, FILE * outputFile) {
     
     // while (there is still data to read)
     while ((currentCode = readBinary(inputFile)) > 0) { // currcode = read in a code
-        printf("go to this");
 
-    
         if (currentCode >= nextCode) {
             fputc(firstChar = decode(previousCode, outputFile), outputFile); // S+C+S+C+S exception [2.]
             //printf("%c", firstChar);
@@ -93,7 +95,9 @@ void decompress(FILE * inputFile, FILE * outputFile) {
         // prevcode = currcode
         previousCode = currentCode;
     }
-    //printf("\n");
+
+
+    printf("End decompress process");
 }
 
 int decode(int code, FILE * outputFile) {
@@ -106,6 +110,7 @@ int decode(int code, FILE * outputFile) {
         character = code; // ASCII
         temp = code;
     }
+    printf("%c", character);
     fputc(character, outputFile);
     //printf("%c", character);
     //appendCharacter(character);

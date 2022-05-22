@@ -18,13 +18,13 @@ struct DictNode {
     struct DictNode *next;
 };
 
-//void dictionaryInit();
-//void appendNode(struct DictNode *node);
-//void dictionaryDestroy();
-//int dictionaryLookup(int prefix, int character);
-//int dictionaryPrefix(int value);
-//int dictionaryCharacter(int value);
-//void dictionaryAdd(int prefix, int character, int value);
+void dictionaryInit();
+void appendNode(struct DictNode *node);
+void dictionaryDestroy();
+int dictionaryLookup(int prefix, int character);
+int dictionaryPrefix(int value);
+int dictionaryCharacter(int value);
+void dictionaryAdd(int prefix, int character, int value);
 
 // the dictionary
 struct DictNode *dictionary, *tail;
@@ -52,6 +52,8 @@ void appendNode(struct DictNode *node) {
 // destroy the whole dictionary down to NULL
 void dictionaryDestroy() {
     while (dictionary != NULL) {
+        struct DictNode *temp = dictionary;
+        free(temp);
         dictionary = dictionary->next; /* the head now links to the next element */
     }
 }

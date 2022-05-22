@@ -47,6 +47,6 @@ int readBinary(FILE * input) {
         
         code = (code << 4) + (nextCode >> 4);
     }
-    printf("%d", code);
+    printf("code is: %d\n", code);
     return code;
 }

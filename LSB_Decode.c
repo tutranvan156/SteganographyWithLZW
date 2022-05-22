@@ -1,7 +1,4 @@
 #include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
 
 ////decode function
 int LSB_Decode(FILE *pf1, FILE *pf2);
@@ -10,12 +7,8 @@ int LSB_Decode(FILE *pf1, FILE *pf2);
  */
 void size_decryption(FILE *pf1, int *size_txt);
 
-///* decryption of strings*/
-void string_decryption(FILE *pf1, char *strng, int size);
-
 ///* decryption of secret message*/
 void secret_decryption(int size_txt, FILE *pf1, FILE *pf2);
-
 
 /**
  * End of declare interface
@@ -25,6 +18,7 @@ void size_decryption(FILE *pf1, int *size_txt) {
     //pf1 is the pointer that go direct to 55'th position
     int file_buff = 0, i;
     int ch, bit_msg;
+    //todo: I change this line from 8 to 16
     for (i = 0; i < 8; i++) {
         //get each character of this destination file
         ch = fgetc(pf1);
@@ -43,43 +37,9 @@ void size_decryption(FILE *pf1, int *size_txt) {
     *size_txt = file_buff;
 }
 
-/* decryption of strings*/
-void string_decryption(FILE *pf1, char *strng, int size)
-//we are using this function to get the password
-{
-    int file_buff = 0, i, j = 0, k = 0;
-    int ch, bit_msg;
-    //each byte of the secret string will have 8 bit, so that is the reason we multiply it with 8
-    for (i = 0; i < (size * 8); i++) {
-        j++;
-        ch = fgetc(pf1);
-        //we will get the least significant bit of this character
-        bit_msg = (ch & 1);
-        if (bit_msg) {
-            //assume that if this bit = 1 then just put 1 in the file_buff
-            file_buff = (file_buff << 1) | 1;
-        } else {
-            //else are the same we will put 0
-            file_buff = file_buff << 1;
-        }
-
-        //if j == 8 mean that we can go through one character, so we need to convert it from binary to hex
-        if (j == 8) {
-            strng[k] = (char) file_buff;
-            //re-counter j variable
-            j = 0;
-
-            //counter for array
-            k++;
-            //fflush file_buff for next character
-            file_buff = 0;
-        }
-    }
-    strng[k] = '\0';
-}
-
 /* decryption of secret message*/
 void secret_decryption(int size_txt, FILE *pf1, FILE *pf2) {
+    printf("size of message is %d", size_txt);
     int file_buff = 0, i, j = 0, k = 0;
     int ch, bit_msg;
     char output[250] = {0};
@@ -94,7 +54,12 @@ void secret_decryption(int size_txt, FILE *pf1, FILE *pf2) {
         }
 
         if (j == 8) {
+//            printf("File buff %c", file_buff);
+//            putc(file_buff, pf2);
+
             putc(file_buff, pf2);
+            printf("File buff %c", file_buff);
+
             output[k++] = file_buff;
             j = 0;
             file_buff = 0;
