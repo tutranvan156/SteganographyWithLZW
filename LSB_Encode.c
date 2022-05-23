@@ -124,7 +124,7 @@ void size_encrypt(int num, FILE *fp1, FILE *fp3) {
     int bit_msg;
 
     //todo: I think this line must be 16
-    for (i = 1; i <= 8; i++) {
+    for (i = 1; i <= 16; i++) {
         //file_buff store
         file_buff = fgetc(fp1);
 

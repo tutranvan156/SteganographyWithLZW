@@ -71,6 +71,13 @@ void decompress(FILE * inputFile, FILE * outputFile) {
     int previousCode; int currentCode;
     int nextCode = 256; // start with the same dictionary of 256 characters
 
+    /**
+     * This block of code is added by me
+     */
+    //todo: I add this line of code
+    dictionaryInit();
+
+
     int firstChar;
     
     // prevcode = read in a code
@@ -95,8 +102,7 @@ void decompress(FILE * inputFile, FILE * outputFile) {
         // prevcode = currcode
         previousCode = currentCode;
     }
-
-
+    dictionaryDestroy();
     printf("End decompress process");
 }
 

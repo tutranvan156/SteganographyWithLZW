@@ -19,7 +19,7 @@ void size_decryption(FILE *pf1, int *size_txt) {
     int file_buff = 0, i;
     int ch, bit_msg;
     //todo: I change this line from 8 to 16
-    for (i = 0; i < 8; i++) {
+    for (i = 0; i < 16; i++) {
         //get each character of this destination file
         ch = fgetc(pf1);
         //then get the least significant bit of this character
@@ -42,7 +42,7 @@ void secret_decryption(int size_txt, FILE *pf1, FILE *pf2) {
     printf("size of message is %d", size_txt);
     int file_buff = 0, i, j = 0, k = 0;
     int ch, bit_msg;
-    char output[250] = {0};
+    char output[65000] = {0};
     for (i = 0; i < (size_txt * 8); i++) {
         j++;
         ch = fgetc(pf1);

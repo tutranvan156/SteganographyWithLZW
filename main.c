@@ -50,10 +50,9 @@ int main(int argc, char *argv[]) {
                 scanf("%s", output_image2);
                 FILE *decodeInputImage = fopen(output_image2, "rb+");
                 /**
-                 * We meet probem at beforeDecompress, this file does not change
+                 * We meet problem at beforeDecompress, this file does not change
                  */
                 FILE *decodeSecretText = fopen("D://beforeDecompress.txt", "w");
-                FILE *result = fopen("D://result.txt", "w");
                 LSB_Decode(decodeInputImage, decodeSecretText);
                 fclose(decodeInputImage);
                 fclose(decodeSecretText);
@@ -61,6 +60,7 @@ int main(int argc, char *argv[]) {
                  * Secret text after LSB_Decode is correct
                  */
                 FILE *file1 = fopen("D://beforeDecompress.txt", "r");
+                FILE *result = fopen("D://result.txt", "w");
                 decompress(file1, result);
                 fflush(stdin);
                 fclose(file1);
@@ -69,11 +69,7 @@ int main(int argc, char *argv[]) {
             default :
                 printf("\t*** !! Error !! ERROR !! Error !!***\n\n");
                 printf("*** EXECUTION ==> ");
-                printf("\n\t\t*** ENCODING *** ==> \t./a.out -E -i <input.bmp> -s <secret.txt> -o <output.bmp>\n\n");
-                printf("\t\t*** DECODING *** ==> \t./a.out -D -i <output.bmp> -o <output_text.txt>\n\n");
-                printf("\t\tFOR MORE DETAILS ===> **README**\n");
         }
-
     }
     return 0;
 }
